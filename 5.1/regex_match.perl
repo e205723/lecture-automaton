@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 
-my $target = "Brouhaha";
-my $regex = 'haha';
+my $target = "Brouhaha!";
+my $regex = '(h|a)aha*';
 
 while ($target =~ m/$regex/g) {
   my $match = $&;
