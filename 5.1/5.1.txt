@@ -1,0 +1,98 @@
+From: Yoshiaki Sano <e205723@ie.u-ryukyu.ac.jp>
+Subject: Automaton Lecture Exercise 5.1
+Date: February 12, 2023 at 7:47:18 AM GMT+9
+To: Shinji KONO <kono@ie.u-ryukyu.ac.jp>
+
+正規表現のパターンに対するテキストプログラム
+
+## perlで実装する
+
+[regex_match.perl](https://github.com/e205723/lecture-automaton/blob/main/5.1/regex_match.perl)
+
+```
+use strict;
+use warnings;
+
+my $target = "Brouhaha!";
+my $regex = '(h|a)aha*';
+
+while ($target =~ m/$regex/g) {
+  my $match = $&;
+  my $start = $-[0];
+  my $end = $+[0];
+  print "pattern match succeeded\n";
+  print "Match: $match\n";
+}
+```
+
+実行結果
+
+```
+$ perl regex_match.perl
+pattern match succeeded
+Match: haha
+```
+
+## Cで実装する
+
+[regex_match.perl](https://github.com/e205723/lecture-automaton/blob/main/5.1/regex_match.c)
+
+```
+#include <stdio.h>
+#include <regex.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc, char *argv[]) {
+  regex_t preg;
+  int result, i, match_count;
+  regmatch_t *pmatch;
+  char *target = "Brouhaha!";
+  int target_len = strlen(target);
+  int offset = 0;
+
+  // Compile the regular expression pattern
+  result = regcomp(&preg, "(h|a)aha*", REG_EXTENDED);
+  if (result != 0) {
+    printf("fail to compile regex\n");
+    return 1;
+  }
+
+  // Perform the pattern matching
+  pmatch = malloc(sizeof(regmatch_t));
+  result = regexec(&preg, target + offset, 1, pmatch, 0);
+  match_count = 0;
+  while (result == 0 && offset < target_len) {
+    printf("pattern match succeeded\n");
+    printf("Match: %.*s\n", (int)(pmatch[0].rm_eo - pmatch[0].rm_so), target + offset + pmatch[0].rm_so);
+    match_count++;
+    offset += pmatch[0].rm_eo;
+    pmatch = realloc(pmatch, (match_count + 1) * sizeof(regmatch_t));
+    result = regexec(&preg, target + offset, 1, &pmatch[match_count], REG_NOTBOL);
+  }
+  if (result != REG_NOMATCH) {
+    printf("fail to execute regrex\n");
+    return 1;
+  }
+  free(pmatch);
+
+  regfree(&preg);
+
+  return 0;
+}
+
+```
+
+実行結果: 
+```
+$ gcc regex_match.c -o regex_match && ./regex_match
+pattern match succeeded
+Match: haha
+```
+
+実行結果: 
+```
+$ gcc regex_match.c -o regex_match && ./regex_match
+pattern match succeeded
+Match 0: haha
+```

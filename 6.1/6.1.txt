@@ -1,0 +1,10 @@
+From: Yoshiaki Sano <e205723@ie.u-ryukyu.ac.jp>
+Subject: Automaton Lecture Exercise 6.1
+Date: February 12, 2023 at 6:35:01 PM GMT+9
+To: Shinji KONO <kono@ie.u-ryukyu.ac.jp>
+
+与えられた正規表現をDFAに変換した。
+
+svgファイルとxmlファイルを学科ページにアップロードした
+
+https://ie.u-ryukyu.ac.jp/~e205723/automaton/6-1/
